@@ -1,0 +1,17 @@
+#!/bin/sh
+
+VER=`cat /etc/debian_version | cut -d"." -f1`
+
+total_mem=$(/usr/bin/free -m | /usr/bin/awk '$1 == "Mem:" { print $2 }')
+
+while(true); do
+    if [ $VER -ge 9 ]
+    then
+        current_mem=$(/usr/bin/free -m | /usr/bin/awk '$1 == "Mem:" { print $3 }')
+    elif [ $VER -lt 9 ]
+    then
+        current_mem=$(/usr/bin/free -m | /usr/bin/awk '$1 == "-/+" { print $3 }')
+    fi
+    echo "${current_mem}M/${total_mem}M"
+    sleep 3
+done
