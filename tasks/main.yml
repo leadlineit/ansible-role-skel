@@ -4,6 +4,8 @@
     src: etc/skel/{{ item }}
     dest: /etc/skel
     mode: '0755'
+    owner: root
+    group: root
   with_items:
     - .bashrc
     - .screenrc
@@ -13,6 +15,8 @@
     src: usr/local/bin/{{ item }}
     dest: /usr/local/bin
     mode: '0755'
+    owner: root
+    group: root
   with_items:
     - screen-mem-usage
 
@@ -20,24 +24,24 @@
   ansible.builtin.copy:
     src: root/{{ item }}
     dest: /root/.bashrc
+    mode: '0755'
     owner: root
     group: root
-    mode: '0755'
   with_items:
     - .bashrc
 
 - name: Check existing users
   ansible.builtin.command: ls -1 /home
-  register: users
   changed_when: false
+  register: users
 
 - name: Copy files for existing users
   ansible.builtin.copy:
     src: etc/skel/{{ item.0 }}
     dest: /home/{{ item.1 }}
+    mode: '0755'
     owner: "{{ item.1 }}"
     group: "{{ item.1 }}"
-    mode: '0755'
   with_nested:
     - [ '.bashrc', '.screenrc' ]
     - '{{ users.stdout_lines }}'
